@@ -7,3 +7,11 @@ migrate-down:
 
 run:
 	go run cmd/main.go
+
+.PHONY: docker-up
+docker-up:
+	docker compose up
+
+.PHONY: docker-down
+docker-down:
+	docker compose down

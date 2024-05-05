@@ -11,11 +11,17 @@ func (h *Handler) Routes() *gin.Engine {
 	api := router.Group("/api/v1")
 	{
 
-		api.GET("/:id")
-		// api.POST("/add", h.AddCar)
-		// api.DELETE("/delete/:id", h.DeleteCarById)
-		// api.GET("/list", h.GetCarsList)
-		// api.PUT("/update/:id", h.UpdateCarInfo)
+		account := api.Group("/accounts")
+		{
+			account.POST("/create", h.CreateAccount)
+			account.GET("/", h.GetAllAccountsWithTransactions)
+		}
+
+		transaction := api.Group("/transactions")
+		{
+			transaction.POST("/create", h.CreateTransaction)
+			transaction.GET("/:id", h.GetAllTransactionsByAccountId)
+		}
 
 	}
 	return router
