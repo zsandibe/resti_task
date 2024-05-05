@@ -9,6 +9,20 @@ import (
 	"github.com/zsandibe/resti_task/pkg"
 )
 
+type AccountResponse struct {
+	Id int `json:"id"`
+}
+
+// @Summary Create a new account
+// @Description Creates a new account by taking a name and initial balance
+// @Tags account
+// @Accept  json
+// @Produce  json
+// @Param   input  body      domain.CreateAccountInput  true  "Account Creation Data"
+// @Success 201  {object} AccountResponse
+// @Failure 400  {object}  Response
+// @Failure 500 {object} Response
+// @Router /accounts/create [post]
 func (h *Handler) CreateAccount(c *gin.Context) {
 	var inp domain.CreateAccountInput
 	if err := c.BindJSON(&inp); err != nil {
@@ -23,13 +37,24 @@ func (h *Handler) CreateAccount(c *gin.Context) {
 
 	id, err := h.service.CreateAccount(c, &inp)
 	if err != nil {
-		errorResponse(c, http.StatusBadRequest, fmt.Errorf("error with creating account: %v", err))
+		errorResponse(c, http.StatusInternalServerError, fmt.Errorf("error with creating account: %v", err))
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"id": id})
+	resp := &AccountResponse{
+		Id: id,
+	}
+	c.JSON(http.StatusCreated, resp)
 }
 
+// @Summary Get accounts
+// @Description Getting account with transactions
+// @Tags account
+// @Produce json
+// @Success 200 {object} []domain.GetAccountOutput
+// @Failure 400,404 {object} Response
+// @Failure 500 {object} Response
+// @Router / [get]
 func (h *Handler) GetAllAccountsWithTransactions(c *gin.Context) {
 	accounts, err := h.service.GetAllAccountsWithTransactions(c)
 	if err != nil {

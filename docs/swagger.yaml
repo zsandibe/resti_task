@@ -1,0 +1,183 @@
+basePath: /api/v1
+definitions:
+  domain.CreateAccountInput:
+    properties:
+      balance:
+        type: number
+      name:
+        type: string
+    type: object
+  domain.CreateTransactionInput:
+    properties:
+      account_id:
+        type: integer
+      account2_id:
+        type: integer
+      group:
+        type: string
+      value:
+        type: number
+    type: object
+  domain.GetAccountOutput:
+    properties:
+      balance:
+        type: number
+      created_date:
+        type: string
+      id:
+        type: integer
+      transactions:
+        items:
+          $ref: '#/definitions/entity.Transaction'
+        type: array
+      username:
+        type: string
+    type: object
+  entity.Transaction:
+    properties:
+      account_id:
+        type: integer
+      account2_id:
+        type: integer
+      created_date:
+        type: string
+      group:
+        type: string
+      id:
+        type: integer
+      value:
+        type: number
+    type: object
+  v1.AccountResponse:
+    properties:
+      id:
+        type: integer
+    type: object
+  v1.Response:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact: {}
+  description: This is basic server for a car service
+  title: Resti API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Getting account with transactions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/domain.GetAccountOutput'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.Response'
+      summary: Get accounts
+      tags:
+      - account
+  /{id}:
+    get:
+      description: Getting transactions by  account id
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Transaction'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.Response'
+      summary: Get transactions
+      tags:
+      - transaction
+  /accounts/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new account by taking a name and initial balance
+      parameters:
+      - description: Account Creation Data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateAccountInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/v1.AccountResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.Response'
+      summary: Create a new account
+      tags:
+      - account
+  /transactions/create:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new transaction by taking a value and account id,group.Account2_id
+        optional
+      parameters:
+      - description: Transaction Creation Data
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/domain.CreateTransactionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Successfully created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.Response'
+      summary: Create a new transaction
+      tags:
+      - transaction
+swagger: "2.0"

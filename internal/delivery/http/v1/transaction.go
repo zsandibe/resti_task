@@ -10,6 +10,16 @@ import (
 	"github.com/zsandibe/resti_task/pkg"
 )
 
+// @Summary Create a new transaction
+// @Description Creates a new transaction by taking a value and account id,group.Account2_id optional
+// @Tags transaction
+// @Accept  json
+// @Produce  json
+// @Param   input  body      domain.CreateTransactionInput  true  "Transaction Creation Data"
+// @Success 201  {string} string "Successfully created"
+// @Failure 400  {object}  Response
+// @Failure 500 {object} Response
+// @Router /transactions/create [post]
 func (h *Handler) CreateTransaction(c *gin.Context) {
 	fmt.Println("OK")
 	var inp domain.CreateTransactionInput
@@ -32,6 +42,14 @@ func (h *Handler) CreateTransaction(c *gin.Context) {
 	c.JSON(http.StatusCreated, "Successfully created")
 }
 
+// @Summary Get transactions
+// @Description Getting transactions by  account id
+// @Tags transaction
+// @Produce json
+// @Success 200 {object} []entity.Transaction
+// @Failure 400,404 {object} Response
+// @Failure 500 {object} Response
+// @Router /{id} [get]
 func (h *Handler) GetAllTransactionsByAccountId(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	fmt.Println(c.Param("id"))
